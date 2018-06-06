@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validator, Validators } from '@angular/forms';
 import { Http } from '@angular/http';
 
 @Component({
@@ -11,35 +11,56 @@ export class ImageAudioUploadComponent implements OnInit {
 
 
   imageUrl = '/assets/img/default.png';
-  audioUrl  = null;
+  audioUrl  = '../../assets/img/Track_027.mp3';
+  imageTag = '';
   uploadImageFile: File = null;
   uploadAudioFile: File = null;
   toeflFiles: Array<File> = [];
+  form: FormGroup;
+  audioPreview: string;
+  imagePreview: string;
 
   constructor(private http: Http) { }
 
   ngOnInit() {
+
+    this.form = new FormGroup({
+      'toeflDesc': new FormControl(null, {validators: [Validators.required]})
+    })
   }
-  handleImageFileInput(file: FileList) {
-    this.uploadImageFile = file.item(0);
+  
+  onImagePicked(event: Event) {
+    this.uploadImageFile = (event.target as HTMLInputElement).files[0];
     const reader = new FileReader();
-    reader.onload = (event: any) => {
-      this.imageUrl = event.target.result;
-    };
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+    }
+    console.log(this.uploadImageFile);
     reader.readAsDataURL(this.uploadImageFile);
+
   }
-  handleAudioFileInput(file: FileList) {
-    this.uploadAudioFile = file.item(0);
+
+  onAudioPicked(event: Event) {
+    this.uploadAudioFile = (event.target as HTMLInputElement).files[0];
     const reader = new FileReader();
-    reader.onload = (event: any) => {
-      this.audioUrl = event.target.result;
-    };
+    reader.onload = () => {
+      this.audioPreview = reader.result;
+    }
     reader.readAsDataURL(this.uploadAudioFile);
+
   }
-  onSubmit(form: NgForm) {
+
+
+  onSubmit() {
+
+    console.log(this.form);
+    console.log(this.uploadAudioFile);
+    console.log(this.uploadImageFile);
+
     const fd = new FormData();
     const toeflDesc = 'this is a update testing documents';
     fd.append('toeflDesc', toeflDesc);
+    
     if ( this.uploadImageFile ) {
       fd.append('toeflFiles', this.uploadImageFile);
     }
@@ -56,10 +77,10 @@ export class ImageAudioUploadComponent implements OnInit {
       console.log(res);
     });
 
-    // this.http.patch('http://192.168.0.3:3000/registerExam/101' + token, fd)
-    // .subscribe(res => {
-    //   console.log(res);
-    // });
+    this.http.patch('http://192.168.0.3:3000/registerExam/101' + token, fd)
+    .subscribe(res => {
+      console.log(res);
+    });
 
   }
 }

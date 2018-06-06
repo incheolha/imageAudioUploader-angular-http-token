@@ -1,39 +1,65 @@
 
 <div class="container">
-  <div class="row">
-    <div class="col s8 offset-2">
-      <div class="card-panel teal lighten-2">
-        <h4 class="center white-text">Image Library</h4>
-      </div>
-        <form (ngSubmit)="onSubmit(f)" #f="ngForm">
-          <div class="row">
-            <div class="input-field col s12">
-              <input type="text"
-                    #Caption
-                    ngModel
-                    name="Caption"
-                    id="Caption">
-
-              <label for="Caption">Caption</label>
-
-            </div>
-              <img [src]="imageUrl" style="width:250px;height: 200px">
-              <input type="file" #Image accept="image/*" (change)="handleImageFileInput($event.target.files)" multiple>
-              <hr>
-              <br>
-              <div *ngIf="audioUrl">
-                <audio controls>
-                    <source [src]="audioUrl" type="audio/mpeg">
-                    <source [src]="audioUrl" type="audio/ogg">
-                </audio>
+    <div class="row">
+      <div class="col s8 offset-2">
+        <div class="card-panel teal lighten-2">
+          <h4 class="center white-text">Image Library</h4>
+        </div>
+          <form [formGroup]="form" (submit)="onSubmit()">
+            <div class="row">
+              <div class="input-field col s12">
+                <div>
+                <input type="text"
+                        formControlName="toeflDesc"
+                        placeholder="Please enter the title">
               </div>
-              <input type="file" #Image accept="audio/*" (change)="handleAudioFileInput($event.target.files)" multiple>
-              <hr>
-            <div>
-              <button type="submit" class="btn-large btn-submit">Submit</button>
+              <div>
+              <button class="btn btn-primary"
+                      type="button"
+                      (click)="imagePicker.click()">PickUp the Image
+              </button>
+              <input type="file" 
+                      #imagePicker 
+                      accept="image/*" 
+                    (change)="onImagePicked($event)" 
+                    multiple>
+              </div>   
+              <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview">
+                 
+                    <img [src]="imagePreview" *ngIf="imagePreview !=='' && imagePreview">
+                  
+              </div>
+
+                <hr>
+                <br>
+                
+ 
+              <div>
+                  <button class="btn btn-primary"
+                          type="button"
+                          (click)="audioPicker.click()">PickUp Audio
+                  </button>
+                  <input type="file" 
+                          #audioPicker 
+                          accept="audio/*" 
+                        (change)="onAudioPicked($event)" 
+                        multiple>
+              </div>      
+                
+                <hr>
+
+                <div class="audio-preview" *ngIf="audioPreview !== '' && audioPreview">
+                    <audio controls 
+                         [src]="audioPreview" *ngIf="audioPreview !=='' && audioPreview">
+                    </audio>  
+                </div>
+    
+              
+                <button type="submit" class="btn-large btn-submit">Submit</button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+      </div>
     </div>
   </div>
-</div>
+  
